@@ -1,0 +1,14 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    attribute_struct (0.2.16)
+    multi_json (1.11.0)
+    sparkle_formation (0.2.12)
+      attribute_struct (~> 0.2.2)
+      multi_json
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  sparkle_formation
