@@ -12,14 +12,10 @@ SparkleFormation.build do
       type 'String'
       allowed_values %w(test staging production)
     end
-    role do
-      description 'Role eg "web", "cache"'
-      type 'String'
-      default 'session-cache'
-    end
-    instance_type do
+    default_instance_type do
       description 'Instance type eg "m3.large"'
       type 'String'
+      default 'm3.medium'
     end
   end
 end

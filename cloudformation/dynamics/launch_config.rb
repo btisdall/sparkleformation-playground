@@ -1,6 +1,6 @@
 require 'base64'
 
-SparkleFormation.dynamic(:babel_general_launch_config) do |_name, _config = {}|
+SparkleFormation.dynamic(:launch_config) do |_name, _config = {}|
 
   # Shamelessly copied from https://github.com/gswallow/cfn-templates/
   # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-as-launchconfig.html
@@ -29,7 +29,7 @@ EOF
     type 'AWS::AutoScaling::LaunchConfiguration'
     properties do
       image_id _config[:image_id] || _cf_map(:region_to_ami_map, 'AWS::Region', 'ami'._no_hump)
-      instance_type _config[:instance_type] || ref!(:instance_type)
+      instance_type _config[:instance_type] || ref!(:default_instance_type)
       associate_public_ip_address _config[:public_ips] || false
       iam_instance_profile 'babel-instance-bootstrap'
       key_name _config[:key_name] || ref!(:key_name)
