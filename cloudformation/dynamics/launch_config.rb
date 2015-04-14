@@ -4,18 +4,18 @@ SparkleFormation.dynamic(:launch_config) do |_name, _config = {}|
 
   # Shamelessly copied from https://github.com/gswallow/cfn-templates/
   # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-as-launchconfig.html
-#  parameters(:instance_type) do
-#    type 'String'
-#    default _config[:instance_type] || 'm3.medium'
-#  end
 
-  userdata = <<EOF
+  userdata_header = <<EOF
 #!/usr/bin/env bash
+set -e -x
+EOF
+  userdata_body = <<EOF
+exec > /var/log/bootstrap.log 2>&1
 apt-get update
 apt-get -y install python-pip
 pip install awscli
-aws s3 cp s3://babel-instance-bootstrap/babel_provisioning_test.sh /tmp/babel_provisioning_test.sh
-bash /tmp/babel_provisioning_test.sh
+aws s3 cp s3://babel-instance-bootstrap/bin/bootstrap_provisioning.sh /root/bootstrap_provisioning.sh
+bash /root/bootstrap_provisioning.sh
 EOF
 
   mappings.region_to_ami_map do
@@ -34,7 +34,12 @@ EOF
       iam_instance_profile 'babel-instance-bootstrap'
       key_name _config[:key_name] || ref!(:key_name)
       security_groups array!( *_config[:security_groups] )
-      user_data base64!(userdata)
+      user_data base64!(join!(
+        userdata_header,
+        join!('export BABEL_ROLE=', _config[:role], "\n"),
+        join!('export BABEL_ENVIRONMENT=', ref!(:environment), "\n"),
+        userdata_body
+      ))
     end
   end
 end

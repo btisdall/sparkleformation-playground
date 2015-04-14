@@ -2,7 +2,7 @@ SparkleFormation.build do
   set!('AWSTemplateFormatVersion', '2010-09-09')
 
   parameters do
-    key_pair do
+    key_name do
       description 'Name of an existing EC2 KeyPair to enable SSH access to the instance'
       type 'String'
       default 'bentis-no-pp'
