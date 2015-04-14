@@ -17,6 +17,9 @@ SparkleFormation.build do
       type 'String'
       default 'session-cache'
     end
+    instance_type do
+      description 'Instance type eg "m3.large"'
+      type 'String'
+    end
   end
-
 end
