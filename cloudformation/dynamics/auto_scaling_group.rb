@@ -44,4 +44,11 @@ SparkleFormation.dynamic(:babel_general_asg) do |_name, _config = {}|
       )
     end
   end
+
+  outputs do
+    instance_id do
+      description 'Name of the launch configuration'
+      value _cf_ref(_name)
+    end
+  end
 end
