@@ -2,7 +2,7 @@ require 'base64'
 
 SparkleFormation.dynamic(:auto_scaling_group) do |_name, _config = {}|
 
-  resources(_name.to_sym) do
+  resources("#{_name}_auto_scaling_group".to_sym) do
     type 'AWS::AutoScaling::AutoScalingGroup'
     properties do
       availability_zones ( _config[:availability_zones] ? _array(*_config[:availability_zones]) : get_azs! )
@@ -13,7 +13,7 @@ SparkleFormation.dynamic(:auto_scaling_group) do |_name, _config = {}|
       tags _array(
         -> {
           key 'Name'
-          value join!('bentis', _config[:role], ref!(:Environment), :options => { :delimiter => '-' })
+          value join!('bentis', _name, ref!(:Environment), :options => { :delimiter => '-' })
           propagate_at_launch true
         },
         -> {
@@ -23,7 +23,7 @@ SparkleFormation.dynamic(:auto_scaling_group) do |_name, _config = {}|
         },
         -> {
           key 'Role'
-          value _config[:role]
+          value _name
           propagate_at_launch true
         },
         -> {

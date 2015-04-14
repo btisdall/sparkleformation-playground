@@ -9,6 +9,7 @@ SparkleFormation.dynamic(:launch_config) do |_name, _config = {}|
 #!/usr/bin/env bash
 set -e -x
 EOF
+
   userdata_body = <<EOF
 exec > /var/log/bootstrap.log 2>&1
 apt-get update
@@ -25,7 +26,7 @@ EOF
     _set('eu-west-1'._no_hump, :ami => 'ami-4d5b707d')
   end
 
-  resources(_name.to_sym) do
+  resources("#{_name}_launch_config".to_sym) do
     type 'AWS::AutoScaling::LaunchConfiguration'
     properties do
       image_id _config[:image_id] || _cf_map(:region_to_ami_map, 'AWS::Region', 'ami'._no_hump)
@@ -36,8 +37,8 @@ EOF
       security_groups array!( *_config[:security_groups] )
       user_data base64!(join!(
         userdata_header,
-        join!('export BABEL_ROLE=', _config[:role], "\n"),
-        join!('export BABEL_ENVIRONMENT=', ref!(:environment), "\n"),
+        join!('export BABEL_FACT_babel_role=', _name, "\n"),
+        join!('export BABEL_FACT_babel_environment=', ref!(:environment), "\n"),
         userdata_body
       ))
     end
