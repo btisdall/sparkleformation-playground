@@ -30,7 +30,7 @@ SparkleFormation.dynamic(:subnet) do |_name, _config = {}|
       tags _array(
         -> {
           key 'Name'
-          value join!(_name, map!(:subnets_to_az, 'AWS::Region', "#{_config[:az]}_#{_config[:type]}".gsub('-','_').to_sym), {:options => { :delimiter => '-' }})
+          value join!("#{_name}_subnet".gsub('-','_'), _config[:cidr_block].gsub('.', '_').gsub('/', '_'), :options => { :delimiter => '_' })
         },
         -> {
           key 'Network'

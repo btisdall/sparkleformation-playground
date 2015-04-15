@@ -17,5 +17,10 @@ SparkleFormation.build do
       type 'String'
       default 'm3.medium'
     end
+    vpc do
+      description 'ID of VPC in which resources will be created'
+      type 'String'
+      default 'vpc-887645e5'
+    end
   end
 end
