@@ -12,7 +12,7 @@ EOF
 
   facts_header = <<EOF
 # propagate facts to instance for use by Puppet
-# Note that some these are not known until stack creation is underway
+# Note that some values are not known until stack creation is in progress
 EOF
 
   userdata_body = <<EOF
@@ -32,13 +32,14 @@ EOF
   end
 
   facts = { 'babel_role' => _name, 'babel_environment' => ref!(:environment) }.merge(_config[:facts] || {} )
+
   resources("#{_name}_launch_config".to_sym) do
     type 'AWS::AutoScaling::LaunchConfiguration'
     properties do
       image_id _config[:image_id] || _cf_map(:region_to_ami_map, 'AWS::Region', 'ami'._no_hump)
       instance_type _config[:instance_type] || ref!(:default_instance_type)
       associate_public_ip_address _config[:public_ips] || false
-      iam_instance_profile 'babel-instance-bootstrap'
+      iam_instance_profile _config[:iam_instance_profile] || 'babel-instance-bootstrap'
       key_name _config[:key_name] || ref!(:key_name)
       security_groups array!( *_config[:security_groups] )
       user_data base64!(join!(
