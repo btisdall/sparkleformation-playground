@@ -7,15 +7,15 @@ SparkleFormation.new('babel_session_cache').load(:base).overrides  do
   dynamic!(
     :launch_config,
     role,
-    :security_groups => _array(ref!("#{role}_sg".to_sym)),
+    :security_groups => [ role + '_sg' ],
     :public_ips => true,
     :facts => { 'babel_this' => ref!(:default_instance_type) },
   )
   dynamic!(
     :auto_scaling_group,
     role,
-    :launch_configuration_name => ref!("#{role}_launch_config".to_sym),
-    :subnets => [ref!("#{role}_#{azs.first.gsub('-', '_')}_subnet".to_sym)],
+    :launch_configuration_name => role + '_launch_config',
+    :subnets => [ "#{role}_#{azs.first.gsub('-', '_')}_subnet" ],
     :availability_zones => %w(us-east-1e),
     :load_balancer_names => ['public_elb'],
   )
@@ -39,22 +39,20 @@ SparkleFormation.new('babel_session_cache').load(:base).overrides  do
   azs.each do |az|
     dynamic!(
       :subnet,
-      "#{role}_#{az.gsub('-', '_')}".to_sym,
+      role + '_' + az.gsub('-', '_'),
       :type => :private,
       :az => az,
       :cidr_block => '10.108.20.0/24',
-      # TODO: this is nasty, the subnet dynamic I nicked already does the 'ref!'
       :route_tables => [:default_route_table],
     )
   end
   azs.each do |az|
     dynamic!(
       :subnet,
-      "elb_#{az.gsub('-', '_')}".to_sym,
+      'elb_' + az.gsub('-', '_'),
       :type => :public,
       :az => az,
       :cidr_block => '10.108.21.0/24',
-      # TODO: this is nasty, the subnet dynamic I nicked already does the 'ref!'
     )
   end
   dynamic!(
@@ -64,7 +62,7 @@ SparkleFormation.new('babel_session_cache').load(:base).overrides  do
       { :instance_port => '80', :instance_protocol => 'http', :load_balancer_port => '80', :protocol => 'http' },
     ],
     :security_groups => [:public_elb_sg],
-    :subnets => ["elb_#{azs.first.gsub('-', '_')}_subnet".to_sym],
+    :subnets => ["elb_#{azs.first.gsub('-', '_')}_subnet"],
   )
 
 end

@@ -41,7 +41,7 @@ EOF
       associate_public_ip_address _config[:public_ips] || false
       iam_instance_profile _config[:iam_instance_profile] || 'babel-instance-bootstrap'
       key_name _config[:key_name] || ref!(:key_name)
-      security_groups array!( *_config[:security_groups] )
+      security_groups array!(*_config[:security_groups].map { |sg| ref!(sg.to_sym) })
       user_data base64!(join!(
         userdata_header,
         facts_header,
