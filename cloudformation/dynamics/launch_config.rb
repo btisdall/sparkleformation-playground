@@ -45,9 +45,16 @@ EOF
       user_data base64!(join!(
         userdata_header,
         facts_header,
-        facts.map { |k,v| join!('export', ' ', 'BABEL_FACT_', k, '=', v, "\n") },
+        *facts.map { |k,v| join!('export', ' ', 'BABEL_FACT_', k, '=', v, "\n") },
         userdata_body
       ))
+    end
+  end
+
+  outputs do
+    instance_id do
+      description 'Name of the autoscaling configuration'
+      value _cf_ref("#{_name}_launch_config".to_sym)
     end
   end
 end

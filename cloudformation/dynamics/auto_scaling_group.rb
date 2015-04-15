@@ -43,7 +43,7 @@ SparkleFormation.dynamic(:auto_scaling_group) do |_name, _config = {}|
   outputs do
     instance_id do
       description 'Name of the autoscaling configuration'
-      value _cf_ref(_name)
+      value _cf_ref("#{_name}_auto_scaling_group".to_sym)
     end
   end
 end

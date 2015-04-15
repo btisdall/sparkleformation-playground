@@ -7,7 +7,7 @@ SparkleFormation.new('babel_session_cache').load(:base).overrides  do
     role,
     :security_groups => ['sg-efd5ac8b'],
     :public_ips => true,
-    :facts => { 'this' => ref!(:default_instance_type) },
+    :facts => { 'babel_this' => ref!(:default_instance_type) },
   )
   dynamic!(
     :auto_scaling_group,
