@@ -10,6 +10,11 @@ SparkleFormation.dynamic(:launch_config) do |_name, _config = {}|
 set -e -x
 EOF
 
+  facts_header = <<EOF
+# propagate facts to instance for use by Puppet
+# Note that some these are not known until stack creation is underway
+EOF
+
   userdata_body = <<EOF
 exec > /var/log/bootstrap.log 2>&1
 apt-get update
@@ -26,6 +31,7 @@ EOF
     _set('eu-west-1'._no_hump, :ami => 'ami-4d5b707d')
   end
 
+  facts = { 'babel_role' => _name, 'babel_environment' => ref!(:environment) }.merge(_config[:facts] || {} )
   resources("#{_name}_launch_config".to_sym) do
     type 'AWS::AutoScaling::LaunchConfiguration'
     properties do
@@ -37,8 +43,8 @@ EOF
       security_groups array!( *_config[:security_groups] )
       user_data base64!(join!(
         userdata_header,
-        join!('export BABEL_FACT_babel_role=', _name, "\n"),
-        join!('export BABEL_FACT_babel_environment=', ref!(:environment), "\n"),
+        facts_header,
+        facts.map { |k,v| join!('export', ' ', 'BABEL_FACT_', k, '=', v, "\n") },
         userdata_body
       ))
     end

@@ -1,4 +1,4 @@
-SparkleFormation.new('simple_app_stack').load(:base).overrides  do
+SparkleFormation.new('babel_session_cache').load(:base).overrides  do
   description "Stack for babel-session-cache, a short-term data store"
 
   role = 'session_cache'
@@ -7,6 +7,7 @@ SparkleFormation.new('simple_app_stack').load(:base).overrides  do
     role,
     :security_groups => ['sg-efd5ac8b'],
     :public_ips => true,
+    :facts => { 'this' => ref!(:default_instance_type) },
   )
   dynamic!(
     :auto_scaling_group,
