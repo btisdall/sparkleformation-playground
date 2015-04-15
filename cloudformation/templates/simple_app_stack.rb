@@ -24,6 +24,7 @@ SparkleFormation.new('babel_session_cache').load(:base).overrides  do
     role,
     :ingress_rules => [
       { 'cidr_ip' => '10.0.0.0/8', 'ip_protocol' => 'tcp', 'from_port' => '22', 'to_port' => '22'},
+      { 'cidr_ip' => '10.0.0.0/8', 'ip_protocol' => 'tcp', 'from_port' => '80', 'to_port' => '80'},
     ],
     :allow_icmp => true,
   )
