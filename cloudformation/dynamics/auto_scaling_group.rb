@@ -10,6 +10,7 @@ SparkleFormation.dynamic(:auto_scaling_group) do |_name, _config = {}|
       min_size _config[:min_size] || '1'
       max_size _config[:max_size] || '1'
       v_p_c_zone_identifier _config[:subnets]
+      load_balancer_names _array( *_config[:load_balancer_names].map { |lb| ref!(lb.to_sym) } )
       tags _array(
         -> {
           key 'Name'
