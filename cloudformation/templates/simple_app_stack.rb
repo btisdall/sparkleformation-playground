@@ -33,6 +33,8 @@ SparkleFormation.new('babel_session_cache').load(:base).overrides  do
       :type => :private,
       :az => az,
       :cidr_block => '10.108.20.0/24',
+      # TODO: this is nasty, the subnet dynamic I nicked already does the 'ref!'
+      :route_tables => [:default_route_table],
     )
   end
 end

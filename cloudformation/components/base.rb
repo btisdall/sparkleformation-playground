@@ -22,5 +22,10 @@ SparkleFormation.build do
       type 'String'
       default 'vpc-887645e5'
     end
+    default_route_table do
+      description 'ID of default route table'
+      type 'String'
+      default 'rtb-8a7645e7'
+    end
   end
 end
